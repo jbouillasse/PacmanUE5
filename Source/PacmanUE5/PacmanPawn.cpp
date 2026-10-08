@@ -32,11 +32,11 @@ void APacmanPawn::MoveForwardInput(float Value)
     // On utilise un seuil (0.5) pour éviter les micro-mouvements des joysticks de manette
     if (Value > 0.5f)
     {
-        NextDirection = EPacmanDirection::Up; // Touche Z ou Joystick Haut
+        NextDirection = EPacmanDirection::Up;
     }
     else if (Value < -0.5f)
     {
-        NextDirection = EPacmanDirection::Down; // Touche S ou Joystick Bas
+        NextDirection = EPacmanDirection::Down;
     }
 }
 
@@ -44,11 +44,11 @@ void APacmanPawn::MoveRightInput(float Value)
 {
     if (Value > 0.5f)
     {
-        NextDirection = EPacmanDirection::Right; // Touche D ou Joystick Droite
+        NextDirection = EPacmanDirection::Right;
     }
     else if (Value < -0.5f)
     {
-        NextDirection = EPacmanDirection::Left; // Touche Q ou Joystick Gauche
+        NextDirection = EPacmanDirection::Left;
     }
 }
 
@@ -83,7 +83,7 @@ void APacmanPawn::Tick(float DeltaTime)
 
     if (!CurrentNode) return;
 
-    // NOUVEAU : Vérifier le demi-tour instantané AVANT d'atteindre le point
+    // 1. Vérifier le demi-tour instantané AVANT d'atteindre le point
     if (TargetNode && CurrentDirection != EPacmanDirection::None && NextDirection != CurrentDirection)
     {
         if (IsOppositeDirection(CurrentDirection, NextDirection))
@@ -98,16 +98,16 @@ void APacmanPawn::Tick(float DeltaTime)
         }
     }
 
-    // Le reste de ton code original ne change pas
-    // Si on a atteint la cible ou si on est à l'arrêt...
+    // 2. Vérifier si on a atteint la cible ou si on est à l'arrêt
     if (!TargetNode || FVector::Dist(GetActorLocation(), TargetNode->GetActorLocation()) < 5.0f)
     {
         if (TargetNode)
         {
             CurrentNode = TargetNode; 
-            SetActorLocation(CurrentNode->GetActorLocation());
+            SetActorLocation(CurrentNode->GetActorLocation()); // Centre parfaitement le joueur
         }
 
+        // On essaie d'abord d'aller dans la NOUVELLE direction demandée par le joueur
         APacmanNode* PossibleNextNode = GetNodeInDirection(CurrentNode, NextDirection);
         
         if (PossibleNextNode)
@@ -117,6 +117,7 @@ void APacmanPawn::Tick(float DeltaTime)
         }
         else
         {
+            // Si le virage est impossible, on essaie de continuer tout droit
             PossibleNextNode = GetNodeInDirection(CurrentNode, CurrentDirection);
             if (PossibleNextNode)
             {
@@ -124,16 +125,68 @@ void APacmanPawn::Tick(float DeltaTime)
             }
             else
             {
+                // Mur droit devant et aucune nouvelle direction valide : on s'arrête
                 TargetNode = nullptr; 
                 CurrentDirection = EPacmanDirection::None;
             }
         }
     }
 
-    // Le déplacement continu
+    // 3. Le déplacement continu (et la téléportation)
     if (TargetNode)
     {
-        FVector NewLocation = FMath::VInterpConstantTo(GetActorLocation(), TargetNode->GetActorLocation(), DeltaTime, MoveSpeed);
-        SetActorLocation(NewLocation);
+        float DistanceToTarget = FVector::Dist(GetActorLocation(), TargetNode->GetActorLocation());
+
+        if (DistanceToTarget > 1500.f) 
+        {
+            SetActorLocation(TargetNode->GetActorLocation());
+        }
+        else
+        {
+            FVector NewLocation = FMath::VInterpConstantTo(GetActorLocation(), TargetNode->GetActorLocation(), DeltaTime, MoveSpeed);
+            SetActorLocation(NewLocation);
+        }
+    }
+
+    // 4. Orientation visuelle de Pac-Man
+    if (CurrentDirection != EPacmanDirection::None)
+    {
+        float TargetYaw = 0.f;
+        
+        switch (CurrentDirection)
+        {
+            case EPacmanDirection::Right: TargetYaw = 90.f; break;
+            case EPacmanDirection::Down:  TargetYaw = 180.f; break;
+            case EPacmanDirection::Left:  TargetYaw = -90.f; break;
+            case EPacmanDirection::Up:    TargetYaw = 0.f; break;
+        }
+
+        // On récupère sa rotation actuelle pour ne pas écraser son inclinaison "à plat"
+        FRotator CurrentRot = GetActorRotation();
+        
+        // On modifie uniquement l'axe Z
+        CurrentRot.Yaw = TargetYaw;
+
+        // On applique la nouvelle rotation
+        SetActorRotation(CurrentRot);
+    }
+}
+
+void APacmanPawn::PerdreVie()
+{
+    if (Vies > 0)
+    {
+        Vies--; // Enlève 1 point de vie
+        
+        if (Vies <= 0)
+        {
+            // Lorsque les vies sont épuisées, la partie est terminée[cite: 4]
+            if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("GAME OVER !"));
+            // Tu pourras ajouter ici le code pour retourner au Menu Principal
+        }
+        else
+        {
+            // Replacer Pac-Man au point de départ
+        }
     }
 }

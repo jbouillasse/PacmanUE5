@@ -25,7 +25,16 @@ public:
 	APacmanPawn();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Score")
+	int32 Score = 0;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stats")
+	int32 Vies = 3;
 
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	void PerdreVie();
+	
 protected:
 	virtual void BeginPlay() override;
 
@@ -43,8 +52,6 @@ protected:
 	bool IsOppositeDirection(EPacmanDirection Dir1, EPacmanDirection Dir2);
 
 protected:
-	// ... tes autres variables (CurrentNode, TargetNode, etc.) restent identiques
-
 	// Nouvelles fonctions pour les Axes
 	void MoveForwardInput(float Value);
 	void MoveRightInput(float Value);
