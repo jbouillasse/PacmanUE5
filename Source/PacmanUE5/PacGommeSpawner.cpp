@@ -25,15 +25,14 @@ void APacGommeSpawner::GenererGommes()
 
     TArray<FVector> PositionsPossibles;
 
-    // 1. On parcourt tous les noeuds de la carte
+    //On parcourt tous les noeuds de la carte
     for (TActorIterator<APacmanNode> It(World); It; ++It)
     {
         APacmanNode* Node = *It;
 
         // On place OBLIGATOIREMENT une gomme sur l'intersection
         PositionsPossibles.AddUnique(Node->GetActorLocation());
-
-        // Remplissage du couloir vers la DROITE
+        
         if (Node->NodeRight)
         {
             FVector Start = Node->GetActorLocation();
@@ -49,7 +48,7 @@ void APacGommeSpawner::GenererGommes()
                 
                 if (NbSegments > 1)
                 {
-                    // On recalcule l'espacement parfait pour CE couloir précis
+                    // On recalcule l'espacement parfait pour ce couloir précis
                     float EspacementReel = Distance / NbSegments;
                     
                     // On place les gommes intermédiaires
@@ -61,7 +60,7 @@ void APacGommeSpawner::GenererGommes()
             }
         }
 
-        // Remplissage du couloir vers le BAS
+        // Remplissage du couloir vers le bas
         if (Node->NodeDown)
         {
             FVector Start = Node->GetActorLocation();
@@ -85,7 +84,7 @@ void APacGommeSpawner::GenererGommes()
         }
     }
 
-    // 2. On choisit aléatoirement les emplacements des Super Pac-Gommes
+    //On choisit aléatoirement les emplacements des Super Pac-Gommes
     for (int32 i = 0; i < NombreSuperGommes && PositionsPossibles.Num() > 0; i++)
     {
         int32 RandomIndex = FMath::RandRange(0, PositionsPossibles.Num() - 1);
@@ -94,7 +93,7 @@ void APacGommeSpawner::GenererGommes()
         PositionsPossibles.RemoveAt(RandomIndex);
     }
 
-    // 3. On remplit tous les emplacements restants avec des Pac-Gommes classiques
+    //On remplit tous les emplacements restants avec des Pac-Gommes classiques
     for (const FVector& Loc : PositionsPossibles)
     {
         World->SpawnActor<AActor>(PacGommeClass, Loc, FRotator::ZeroRotator);

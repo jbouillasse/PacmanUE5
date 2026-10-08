@@ -4,7 +4,7 @@
 
 APacmanNode::APacmanNode()
 {
-	PrimaryActorTick.bCanEverTick = false; // Pas besoin de Tick pour un simple point
+	PrimaryActorTick.bCanEverTick = false;
 
 	DebugSphere = CreateDefaultSubobject<USphereComponent>(TEXT("DebugSphere"));
 	RootComponent = DebugSphere;

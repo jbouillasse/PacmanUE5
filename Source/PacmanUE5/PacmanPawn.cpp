@@ -9,8 +9,7 @@ APacmanPawn::APacmanPawn()
 void APacmanPawn::BeginPlay()
 {
     Super::BeginPlay();
-    
-    // Initialisation
+
     TargetNode = CurrentNode; 
     if (CurrentNode)
     {
@@ -29,7 +28,6 @@ void APacmanPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void APacmanPawn::MoveForwardInput(float Value)
 {
-    // On utilise un seuil (0.5) pour éviter les micro-mouvements des joysticks de manette
     if (Value > 0.5f)
     {
         NextDirection = EPacmanDirection::Up;
@@ -76,14 +74,12 @@ bool APacmanPawn::IsOppositeDirection(EPacmanDirection Dir1, EPacmanDirection Di
     return false;
 }
 
-// Mise à jour de la fonction Tick
 void APacmanPawn::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
     if (!CurrentNode) return;
 
-    // 1. Vérifier le demi-tour instantané AVANT d'atteindre le point
     if (TargetNode && CurrentDirection != EPacmanDirection::None && NextDirection != CurrentDirection)
     {
         if (IsOppositeDirection(CurrentDirection, NextDirection))
@@ -98,7 +94,6 @@ void APacmanPawn::Tick(float DeltaTime)
         }
     }
 
-    // 2. Vérifier si on a atteint la cible ou si on est à l'arrêt
     if (!TargetNode || FVector::Dist(GetActorLocation(), TargetNode->GetActorLocation()) < 5.0f)
     {
         if (TargetNode)
@@ -131,8 +126,7 @@ void APacmanPawn::Tick(float DeltaTime)
             }
         }
     }
-
-    // 3. Le déplacement continu (et la téléportation)
+    
     if (TargetNode)
     {
         float DistanceToTarget = FVector::Dist(GetActorLocation(), TargetNode->GetActorLocation());
@@ -147,8 +141,7 @@ void APacmanPawn::Tick(float DeltaTime)
             SetActorLocation(NewLocation);
         }
     }
-
-    // 4. Orientation visuelle de Pac-Man
+    
     if (CurrentDirection != EPacmanDirection::None)
     {
         float TargetYaw = 0.f;
@@ -176,17 +169,17 @@ void APacmanPawn::PerdreVie()
 {
     if (Vies > 0)
     {
-        Vies--; // Enlève 1 point de vie
+        Vies--; 
         
         if (Vies <= 0)
         {
-            // Lorsque les vies sont épuisées, la partie est terminée[cite: 4]
+
             if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("GAME OVER !"));
-            // Tu pourras ajouter ici le code pour retourner au Menu Principal
+
         }
         else
         {
-            // Replacer Pac-Man au point de départ
+
         }
     }
 }

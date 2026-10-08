@@ -11,5 +11,5 @@ void APacGome::OnEat()
 		Joueur->Score += 10;
 	}
 
-	Super::OnEat(); // Appelle le Destroy()
+	Super::OnEat();
 }

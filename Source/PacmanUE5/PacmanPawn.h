@@ -5,7 +5,6 @@
 #include "PacmanNode.h" 
 #include "PacmanPawn.generated.h"
 
-// Énumération pour gérer les directions
 UENUM(BlueprintType)
 enum class EPacmanDirection : uint8
 {
@@ -40,8 +39,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float MoveSpeed = 400.f;
-
-	// Le noeud de départ, à assigner obligatoirement dans l'éditeur !
+	
 	UPROPERTY(EditInstanceOnly, Category = "Movement")
 	APacmanNode* CurrentNode;
 
@@ -52,10 +50,8 @@ protected:
 	bool IsOppositeDirection(EPacmanDirection Dir1, EPacmanDirection Dir2);
 
 protected:
-	// Nouvelles fonctions pour les Axes
 	void MoveForwardInput(float Value);
 	void MoveRightInput(float Value);
 
-	// Fonction utilitaire pour trouver le voisin selon la direction
 	APacmanNode* GetNodeInDirection(APacmanNode* Node, EPacmanDirection Direction);
 };

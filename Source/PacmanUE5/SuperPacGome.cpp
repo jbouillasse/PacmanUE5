@@ -11,5 +11,5 @@ void ASuperPacGome::OnEat()
 		Joueur->Score += 100;
 	}
 
-	Super::OnEat(); // Appelle le Destroy()
+	Super::OnEat();
 }

@@ -2,7 +2,6 @@
 #include "PacmanPawn.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
-// Ajoute ici le #include de ton Pacman (ex: #include "PacmanPawn.h")
 
 AEatable::AEatable()
 {
@@ -16,14 +15,13 @@ AEatable::AEatable()
 	// Création du Mesh (le visuel de la gomme)
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	StaticMesh->SetupAttachment(RootComponent);
-	StaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); // Seule la box gère la collision
+	StaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); 
 }
 
 void AEatable::BeginPlay()
 {
 	Super::BeginPlay();
-    
-	// On relie l'événement de collision à notre fonction OnOverlap
+	
 	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AEatable::OnOverlap);
 }
 

@@ -1,9 +1,7 @@
 // PacmanNode.h
 #pragma once
-
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-// Le .generated.h doit obligatoirement rester le tout dernier #include
 #include "PacmanNode.generated.h" 
 
 UCLASS()
